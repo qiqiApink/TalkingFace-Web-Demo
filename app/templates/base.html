@@ -10,7 +10,13 @@
 <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
 {% endblock %}
 
+{% block styles %}
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename="journal.css") }}">
+{% endblock %}
+
 {% block navbar %}
+<!--
     <nav class="navbar navbar-default">
         <div class="container">
             <div class="navbar-header">
@@ -29,7 +35,8 @@
                 </ul>
             </div>
         </div>
-    </nav>
+    </nav>-->
+    {{ nav.top.render() }}
 {% endblock %}
 
 {% block content%}
