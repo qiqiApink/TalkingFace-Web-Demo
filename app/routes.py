@@ -88,7 +88,7 @@ def make_it_talk_handle(uid):
     ifilename = glob.glob(content_path + '/' + uid + 'image.*')[0]
     afilename = glob.glob(content_path + '/' + uid + 'audio.*')[0]
     outputfile = os.path.join(output_dic, app.config['RESULT_FILENAME'])
-    cmd = "python {ROOTDIR}/make_it_talk/main_end2end.py --pic {ifilename} --au {afilename} --outfile {outputfile}".format(ROOTDIR=app.config['ROOTDIR'], ifilename=ifilename, afilename=afilename, outputfile=outputfile)
+    cmd = "/home/nfymzk/anaconda3/envs/talk/bin/python3.6 /home/nfymzk/WorkFile/Work/web_demo/app/make_it_talk/main_end2end.py --pic {ifilename} --au {afilename} --outfile {outputfile}".format(ifilename=ifilename, afilename=afilename, outputfile=outputfile)
     os.system(cmd)
     return render_template('make_it_talk_report.html', imagefile=ifilename.split('/')[-1], audiofile=afilename.split('/')[-1], outputfile=app.config['RESULT_FILENAME'])
 
