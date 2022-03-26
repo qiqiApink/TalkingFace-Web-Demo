@@ -10,7 +10,7 @@ from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileRequired, FileAllowed
 from wtforms import SubmitField
 
-class Upload(FlaskForm):
+class wav2lip_Upload(FlaskForm):
     video = FileField('Choose Video File', validators=[FileAllowed(app.config['ALLOWED_VIDEO_EXTENSIONS'], 'Supported format: mp4'), FileRequired('empty')])
     audio = FileField('Choose Audio File', validators=[FileAllowed(app.config['ALLOWED_AUDIO_EXTENSIONS'], 'Supported format: wav, mp3, flac, ape, aac'), FileRequired('empty')])
     submit = SubmitField('Generate')
@@ -29,11 +29,11 @@ def allowed_file(filename):
 def index():
     return render_template('index.html')
 
-@app.route('/upload', methods=['GET', 'POST'])
-def upload():
-    form = Upload()
+@app.route('/wav2lip_upload', methods=['GET', 'POST'])
+def wav2lip_upload():
+    form = wav2lip_Upload()
     if request.method == 'GET':
-        return render_template('upload.html', form=form)
+        return render_template('wav2lip_upload.html', form=form)
     if form.validate_on_submit():
         uid = generate_random_subdic()
         file_dir = os.path.join(app.config['ROOTDIR'], app.config['UPLOAD_FOLDER'])
@@ -44,10 +44,10 @@ def upload():
         afilename = uid + 'audio.' + audio.filename.rsplit('.', 1)[-1]
         audio.save(os.path.join(file_dir, afilename))
     else:
-        return render_template('upload.html', form=form)
+        return render_template('wav2lip_upload.html', form=form)
     return redirect(url_for('handle', uid=uid))
 
-@app.route('/report/<uid>', methods=['GET'])
+@app.route('/wav2lip_report/<uid>', methods=['GET'])
 def handle(uid):
     content_path = os.path.join(app.config['ROOTDIR'], app.config['UPLOAD_FOLDER'])
     output_dic = os.path.join(app.config['ROOTDIR'], app.config['UPLOAD_FOLDER'], app.config['RESULT_FOLDER'])
@@ -56,9 +56,10 @@ def handle(uid):
     vfilename = glob.glob(content_path + '/' + uid + 'video.*')[0]
     afilename = glob.glob(content_path + '/' + uid + 'audio.*')[0]
     outputfile = os.path.join(output_dic, app.config['RESULT_FILENAME'])
-    cmd = "CUDA_VISIBLE_DEVICES=2 python {ROOTDIR}/Wav2Lip/inference.py --checkpoint_path {ROOTDIR}/Wav2Lip/checkpoints/wav2lip_gan.pth --face {vfilename} --audio {afilename} --outfile {outputfile}".format(ROOTDIR=app.config['ROOTDIR'], vfilename=vfilename, afilename=afilename, outputfile=outputfile)
+    # cmd = "CUDA_VISIBLE_DEVICES=2 python {ROOTDIR}/Wav2Lip/inference.py --checkpoint_path {ROOTDIR}/Wav2Lip/checkpoints/wav2lip_gan.pth --face {vfilename} --audio {afilename} --outfile {outputfile}".format(ROOTDIR=app.config['ROOTDIR'], vfilename=vfilename, afilename=afilename, outputfile=outputfile)
+    cmd = "CUDA_VISIBLE_DEVICES=2 python /home/zyq/zhangyaqi_1/TalkingFace/app/Wav2Lip/inference.py --checkpoint_path /home/zyq/zhangyaqi_1/TalkingFace/app/Wav2Lip/checkpoints/wav2lip_gan.pth --face {vfilename} --audio {afilename} --outfile {outputfile}".format(vfilename=vfilename, afilename=afilename, outputfile=outputfile)
     os.system(cmd)
-    return render_template('report.html', videofile=vfilename.split('/')[-1], audiofile=afilename.split('/')[-1], outputfile=app.config['RESULT_FILENAME'])
+    return render_template('wav2lip_report.html', videofile=vfilename.split('/')[-1], audiofile=afilename.split('/')[-1], outputfile=app.config['RESULT_FILENAME'])
 
 @app.route('/videodownload/<outputfile>', methods=["GET"])
 def videodownload(outputfile):
@@ -91,3 +92,7 @@ def page_not_found(e):
 @app.errorhandler(500)
 def page_not_found(e):
     return render_template('500.html'), 500
+
+@app.route('/test')
+def TEST():
+    return 'test'
