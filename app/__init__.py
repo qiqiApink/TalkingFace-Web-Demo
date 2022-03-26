@@ -15,6 +15,8 @@ nav.register_element(
             'TalkingFace',
             View('Wav2Lip', 'wav2lip_upload'),
             Separator(),
+            View('DeepFake', 'deepfake_upload'),
+            Separator(),
             View('Test', 'test')
         )
     )
@@ -29,4 +31,5 @@ app.config['RESULT_FILENAME'] = "resultvideo.mp4"
 app.config['RESULT_AUDIO'] = 'result.mp3'
 app.config['ALLOWED_VIDEO_EXTENSIONS'] = set(['mp4'])
 app.config['ALLOWED_AUDIO_EXTENSIONS'] = set(['wav', 'mp3', 'flac', 'ape', 'aac'])
+app.config['ALLOWED_IMAGE_EXTENSIONS'] = set(['png', 'jpg', 'bmp', 'eps', 'svg'])
 from app import routes
