@@ -39,6 +39,21 @@
     {{ nav.top.render() }}
 {% endblock %}
 
-{% block content%}
+{% block content %}
     {% block app_content %}{% endblock %}
+    {% block footer %}
+        <div class="container">
+            <div class="page-header"></div>
+            <footer>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <p>Made by <a href="https://github.com/" rel="nofollow">Zhang Yaqi</a>, <a href="https://github.com/" rel="nofollow">Sheng Dianmo</a>, <a href="https://github.com/" rel="nofollow">Ma Zekun</a></p>
+                        <p>Web Code released under the <a href="https://github.com/qiqiApink/TalkingFace-Web-Demo">FaceProject Web Demo</a></p>
+                        <p>Based on <a href="https://getbootstrap.com/" rel="nofollow">Bootstrap</a></p>
+
+                    </div>
+                </div>
+            </footer>
+        </div>
+    {% endblock %}
 {% endblock %}
