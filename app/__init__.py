@@ -15,7 +15,7 @@ nav.register_element(
             'TalkingFace',
             View('Wav2Lip', 'wav2lip_upload'),
             Separator(),
-            View('Make It Talk', 'test')
+            View('Make It Talk', 'make_it_talk_upload')
         ),
         Subgroup(
             'FaceSwap',
@@ -31,7 +31,7 @@ app.config['ROOTDIR'] = os.path.abspath(os.path.dirname(__file__))
 app.config['RESULT_FOLDER'] = "result"
 app.config['RESULT_FILENAME'] = "resultvideo.mp4"
 app.config['RESULT_AUDIO'] = 'result.mp3'
-app.config['ALLOWED_VIDEO_EXTENSIONS'] = set(['mp4'])
+app.config['ALLOWED_VIDEO_EXTENSIONS'] = set(['mp4', 'avi', 'rmvb', 'wmv', 'mov'])
 app.config['ALLOWED_AUDIO_EXTENSIONS'] = set(['wav', 'mp3', 'flac', 'ape', 'aac'])
-app.config['ALLOWED_IMAGE_EXTENSIONS'] = set(['png', 'jpg', 'bmp', 'eps', 'svg'])
+app.config['ALLOWED_IMAGE_EXTENSIONS'] = set(['png', 'jpg', 'jpeg', 'PNG', 'JPEG', 'bmp', 'eps', 'svg'])
 from app import routes
