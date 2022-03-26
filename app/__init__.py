@@ -15,9 +15,11 @@ nav.register_element(
             'TalkingFace',
             View('Wav2Lip', 'wav2lip_upload'),
             Separator(),
-            View('DeepFake', 'deepfake_upload'),
-            Separator(),
-            View('Test', 'test')
+            View('Make It Talk', 'make_it_talk_upload')
+        ),
+        Subgroup(
+            'FaceSwap',
+            View('DeepFake', 'deepfake_upload')
         )
     )
 )
