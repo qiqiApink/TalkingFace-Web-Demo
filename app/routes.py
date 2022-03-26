@@ -72,7 +72,7 @@ def wav2lip_handle(uid):
     afilename = glob.glob(content_path + '/' + uid + 'audio.*')[0]
     outputfile = os.path.join(output_dic, app.config['RESULT_FILENAME'])
     # cmd = "CUDA_VISIBLE_DEVICES=2 python {ROOTDIR}/Wav2Lip/inference.py --checkpoint_path {ROOTDIR}/Wav2Lip/checkpoints/wav2lip_gan.pth --face {vfilename} --audio {afilename} --outfile {outputfile}".format(ROOTDIR=app.config['ROOTDIR'], vfilename=vfilename, afilename=afilename, outputfile=outputfile)
-    cmd = "CUDA_VISIBLE_DEVICES=2 python /home/zyq/zhangyaqi_1/TalkingFace/app/Wav2Lip/inference.py --checkpoint_path /home/zyq/zhangyaqi_1/TalkingFace/app/Wav2Lip/checkpoints/wav2lip_gan.pth --face {vfilename} --audio {afilename} --outfile {outputfile}".format(vfilename=vfilename, afilename=afilename, outputfile=outputfile)
+    cmd = "CUDA_VISIBLE_DEVICES=2 /home/zyq/anaconda3/envs/talkingface/bin/python3 /home/zyq/zhangyaqi_1/TalkingFace/app/Wav2Lip/inference.py --checkpoint_path /home/zyq/zhangyaqi_1/TalkingFace/app/Wav2Lip/checkpoints/wav2lip_gan.pth --face {vfilename} --audio {afilename} --outfile {outputfile}".format(vfilename=vfilename, afilename=afilename, outputfile=outputfile)
     os.system(cmd)
     return render_template('wav2lip_report.html', videofile=vfilename.split('/')[-1], audiofile=afilename.split('/')[-1], outputfile=app.config['RESULT_FILENAME'])
 
