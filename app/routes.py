@@ -11,7 +11,6 @@ from flask_wtf.file import FileField, FileRequired, FileAllowed
 from wtforms import SubmitField
 
 class makeittalk_Upload(FlaskForm):
-    # video = FileField('Choose Video File', validators=[FileAllowed(app.config['ALLOWED_VIDEO_EXTENSIONS'], 'Supported format: mp4, avi'), FileRequired('empty')])
     audio = FileField('Choose Audio File', validators=[FileAllowed(app.config['ALLOWED_AUDIO_EXTENSIONS'], 'Supported format: wav, mp3, flac, ape, aac'), FileRequired('empty')])
     image = FileField('Choose Image File', validators=[FileAllowed(app.config['ALLOWED_IMAGE_EXTENSIONS'], 'Supported format: png, jpg, jpeg, PNG, JPEG'), FileRequired('empty')])
     submit = SubmitField('Generate')
@@ -71,7 +70,6 @@ def wav2lip_handle(uid):
     vfilename = glob.glob(content_path + '/' + uid + 'video.*')[0]
     afilename = glob.glob(content_path + '/' + uid + 'audio.*')[0]
     outputfile = os.path.join(output_dic, app.config['RESULT_FILENAME'])
-    # cmd = "CUDA_VISIBLE_DEVICES=2 python {ROOTDIR}/Wav2Lip/inference.py --checkpoint_path {ROOTDIR}/Wav2Lip/checkpoints/wav2lip_gan.pth --face {vfilename} --audio {afilename} --outfile {outputfile}".format(ROOTDIR=app.config['ROOTDIR'], vfilename=vfilename, afilename=afilename, outputfile=outputfile)
     cmd = "CUDA_VISIBLE_DEVICES=2 /home/zyq/anaconda3/envs/talkingface/bin/python3 /home/zyq/zhangyaqi_1/TalkingFace/app/Wav2Lip/inference.py --checkpoint_path /home/zyq/zhangyaqi_1/TalkingFace/app/Wav2Lip/checkpoints/wav2lip_gan.pth --face {vfilename} --audio {afilename} --outfile {outputfile}".format(vfilename=vfilename, afilename=afilename, outputfile=outputfile)
     os.system(cmd)
     return render_template('wav2lip_report.html', videofile=vfilename.split('/')[-1], audiofile=afilename.split('/')[-1], outputfile=app.config['RESULT_FILENAME'])
@@ -126,9 +124,8 @@ def deepfake_upload():
         vfilename = uid + 'video.' + video.filename.rsplit('.', 1)[-1]
         video.save(os.path.join(file_dir, vfilename))
         image = form.image.data
-        ifilename = uid + 'image.' + image.filename.rsplit('.', 1)[-1]####################################这里我不确定有没有错
+        ifilename = uid + 'image.' + image.filename.rsplit('.', 1)[-1]
         image.save(os.path.join(file_dir, ifilename))
-        
     else:
         return render_template('deepfake_upload.html', form=form)
     return redirect(url_for('deepfake_handle', uid=uid))
@@ -143,17 +140,30 @@ def deepfake_handle(uid):
     ifilename = glob.glob(content_path + '/' + uid + 'image.*')[0]
     mp3file = "/home/nfymzk/WorkFile/Work1/TalkingFace-Web-Demo-main/app/uploads/temp"+uid+'.mp3'
     outputfile = os.path.join(output_dic, app.config['RESULT_FILENAME'])
-    # cmd = "CUDA_VISIBLE_DEVICES=2 python {ROOTDIR}/Wav2Lip/inference.py --checkpoint_path {ROOTDIR}/Wav2Lip/checkpoints/wav2lip_gan.pth --face {vfilename} --audio {afilename} --outfile {outputfile}".format(ROOTDIR=app.config['ROOTDIR'], vfilename=vfilename, afilename=afilename, outputfile=outputfile)
-    cmd = "python /home/nfymzk/WorkFile/Work1/Faceswap1/faceswap.py  --video {vfilename} --image {ifilename} --outputfile {outputfile}".format(ROOTDIR=app.config['ROOTDIR'], vfilename=vfilename, ifilename=ifilename, outputfile=outputfile)
+    vfilename2 = content_path + '/' + uid + 're.mp4'
+    cmd = "/home/nfymzk/anaconda3/envs/swap/bin/python3 /home/nfymzk/WorkFile/Work1/Faceswap1/faceswap.py  --video {vfilename} --image {ifilename} --outputfile {outputfile}".format(ROOTDIR=app.config['ROOTDIR'], vfilename=vfilename, ifilename=ifilename, outputfile=outputfile)
     os.system(cmd)
-    cmd = "ffmpeg -i {vfilename} -f mp3 -vn {mp3file}".format(vfilename=vfilename, mp3file=mp3file)
-    os.system(cmd)
-    cmd = "ffmpeg -i {outputfile} -i {mp3file} -c:v copy -c:a {outputfile}".format(outputfile=outputfile, mp3file=mp3file)
-    os.system(cmd)
-    cmd = "cp -r /home/nfymzk/WorkFile/Work1/TalkingFace-Web-Demo-main/app/uploads/result/resultvideo.mp4 /home/nfymzk/WorkFile/Work1/TalkingFace-Web-Demo-main/app/uploads/"
-    os.system(cmd)
-    return render_template('deepfake_report.html', videofile=vfilename.split('/')[-1], imagefile=ifilename.split('/')[-1], videofile2='resultvideo.mp4',outputfile=app.config['RESULT_FILENAME'])
-#这里穿的参数是什么我不太明白
+    return render_template('deepfake_report.html', videofile=vfilename.split('/')[-1], imagefile=ifilename.split('/')[-1], outputfile=app.config['RESULT_FILENAME'])
+# def deepfake_handle(uid):
+    # content_path = os.path.join(app.config['ROOTDIR'], app.config['UPLOAD_FOLDER'])
+    # output_dic = os.path.join(app.config['ROOTDIR'], app.config['UPLOAD_FOLDER'], app.config['RESULT_FOLDER'])
+    # if not os.path.exists(output_dic):
+        # os.makedirs(output_dic)
+    # vfilename = glob.glob(content_path + '/' + uid + 'video.*')[0]
+    # ifilename = glob.glob(content_path + '/' + uid + 'image.*')[0]
+    # mp3file = "/home/nfymzk/WorkFile/Work1/TalkingFace-Web-Demo-main/app/uploads/temp"+uid+'.mp3'
+    # outputfile = os.path.join(output_dic, app.config['RESULT_FILENAME'])
+    # # cmd = "CUDA_VISIBLE_DEVICES=2 python {ROOTDIR}/Wav2Lip/inference.py --checkpoint_path {ROOTDIR}/Wav2Lip/checkpoints/wav2lip_gan.pth --face {vfilename} --audio {afilename} --outfile {outputfile}".format(ROOTDIR=app.config['ROOTDIR'], vfilename=vfilename, afilename=afilename, outputfile=outputfile)
+    # cmd = "python /home/nfymzk/WorkFile/Work1/Faceswap1/faceswap.py  --video {vfilename} --image {ifilename} --outputfile {outputfile}".format(ROOTDIR=app.config['ROOTDIR'], vfilename=vfilename, ifilename=ifilename, outputfile=outputfile)
+    # os.system(cmd)
+    # cmd = "ffmpeg -i {vfilename} -f mp3 -vn {mp3file}".format(vfilename=vfilename, mp3file=mp3file)
+    # os.system(cmd)
+    # cmd = "ffmpeg -i {outputfile} -i {mp3file} -c:v copy -c:a {outputfile}".format(outputfile=outputfile, mp3file=mp3file)
+    # os.system(cmd)
+    # cmd = "cp -r /home/nfymzk/WorkFile/Work1/TalkingFace-Web-Demo-main/app/uploads/result/resultvideo.mp4 /home/nfymzk/WorkFile/Work1/TalkingFace-Web-Demo-main/app/uploads/"
+    # os.system(cmd)
+    # return render_template('deepfake_report.html', videofile=vfilename.split('/')[-1], imagefile=ifilename.split('/')[-1], videofile2='resultvideo.mp4',outputfile=app.config['RESULT_FILENAME'])
+# #这里穿的参数是什么我不太明白
 
 @app.route('/videodownload/<outputfile>', methods=["GET"])
 def videodownload(outputfile):
