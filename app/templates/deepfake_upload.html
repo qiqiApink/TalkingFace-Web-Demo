@@ -1,12 +1,13 @@
 {% extends "base.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
 {% block app_content %}
-    <div style="margin-left: 150px">
+    <div class="container">
         <form class="form" method="post" action="/deepfake_upload" enctype="multipart/form-data">
             {{ form.hidden_tag() }}
             {{ wtf.form_field(form.video) }}
 	    {{ wtf.form_field(form.image) }}
             {{ wtf.form_field(form.submit) }}
         </form>
+        <div class="empty"></div>
     </div>
 {% endblock %}
