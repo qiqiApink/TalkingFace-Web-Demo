@@ -1,10 +1,11 @@
 {% extends "base.html" %}
 {% block app_content %}
-    <div style="margin-left: 150px">
+<div class="container">
+    <div>
         <h4>Download Output File</h4>
         <a href="/videodownload/{{ outputfile }}">Download Video</a></br>
     </div>
-    <div style="margin-left: 150px">
+    <div>
         <h4>Driving Image</h4>
         <image controls width="320" src='/imageshow/{{ imagefile }}'>
                 <!--<source src="/videoshow" type="video/mp4">!-->
@@ -17,4 +18,6 @@
         <video controls width="320" src='/resultshow/{{ outputfile }}'>
         </video>
     </div>
+    <div class="empty"></div>
+</div>
 {% endblock %}
