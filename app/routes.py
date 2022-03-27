@@ -164,7 +164,6 @@ def videodownload2(videofile2):
     video_path = os.path.join(app.config['ROOTDIR'], app.config['UPLOAD_FOLDER'])
     return send_from_directory(video_path, videofile2, as_attachment=True)
 
-
 @app.route('/videoshow/<videofile>', methods=["GET"])
 def videoshow(videofile):
     video_path = os.path.join(app.config['ROOTDIR'], app.config['UPLOAD_FOLDER'])
