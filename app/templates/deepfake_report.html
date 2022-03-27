@@ -2,7 +2,7 @@
 {% block app_content %}
     <div style="margin-left: 150px">
         <h4>Download Output File</h4>
-        <a href="/videodownload/{{ outputfile }}">Download Video</a></br>
+        <a href="/videodownload2/{{ videofile2 }}">Download Video</a></br>
     </div>
     <div style="margin-left: 150px">
         <h4>Original Video</h4>
@@ -12,9 +12,8 @@
         <h4>Image of Face</h4>
         <img src='/imageshow/{{ imagefile }}' />
                 <!--<source src="/audioshow">!-->
-        </audio>
         <h4>Result Video</h4>
-        <video controls width="320" src='/resultshow/{{ videofile2 }}'>
+        <video controls width="320" src="/resultshow2/{{ videofile2 }}">
             <!--<source src="/videoshow" type="video/mp4">!-->
         </video>
     </div>
