@@ -143,22 +143,37 @@ def deepfake_handle(uid):
     ifilename = glob.glob(content_path + '/' + uid + 'image.*')[0]
     mp3file = "/home/nfymzk/WorkFile/Work1/TalkingFace-Web-Demo-main/app/uploads/temp"+uid+'.mp3'
     outputfile = os.path.join(output_dic, app.config['RESULT_FILENAME'])
+    #outputfile = vfilename
+    #print('vfilename: ', vfilename)
+    #print('outputfile: ', outputfile)
+    #time.sleep(10000)
     # cmd = "CUDA_VISIBLE_DEVICES=2 python {ROOTDIR}/Wav2Lip/inference.py --checkpoint_path {ROOTDIR}/Wav2Lip/checkpoints/wav2lip_gan.pth --face {vfilename} --audio {afilename} --outfile {outputfile}".format(ROOTDIR=app.config['ROOTDIR'], vfilename=vfilename, afilename=afilename, outputfile=outputfile)
-    cmd = "python /home/nfymzk/WorkFile/Work1/Faceswap1/faceswap.py  --video {vfilename} --image {ifilename} --outputfile {outputfile}".format(ROOTDIR=app.config['ROOTDIR'], vfilename=vfilename, ifilename=ifilename, outputfile=outputfile)
+    vfilename2 = content_path + '/' + uid + 're.mp4'
+    vfilename3 = content_path + '/' + uid + 'recode.mp4'
+    vfilename4 = content_path + '/' + uid + 'shengyin.mp4'
+    mp3file = content_path + '/' + uid + 'shengyin.mp3'
+    cmd = "ffmpeg -i {vfilename} -q:a 0 -map a {mp3file}".format(vfilename=vfilename, mp3file=mp3file)
     os.system(cmd)
-    cmd = "ffmpeg -i {vfilename} -f mp3 -vn {mp3file}".format(vfilename=vfilename, mp3file=mp3file)
+    cmd = "/home/nfymzk/anaconda3/envs/swap/bin/python3 /home/nfymzk/WorkFile/Work1/Faceswap1/faceswap.py  --video {vfilename} --image {ifilename} --outputfile {outputfile}".format(ROOTDIR=app.config['ROOTDIR'], vfilename=vfilename, ifilename=ifilename, outputfile=vfilename2)
     os.system(cmd)
-    cmd = "ffmpeg -i {outputfile} -i {mp3file} -c:v copy -c:a {outputfile}".format(outputfile=outputfile, mp3file=mp3file)
+    cmd = "ffmpeg -i {outputfile} -vcodec libx264 -f mp4 {outputfilerecode}".format(outputfile=vfilename2, outputfilerecode=vfilename3)
     os.system(cmd)
-    cmd = "cp -r /home/nfymzk/WorkFile/Work1/TalkingFace-Web-Demo-main/app/uploads/result/resultvideo.mp4 /home/nfymzk/WorkFile/Work1/TalkingFace-Web-Demo-main/app/uploads/"
+    cmd = "ffmpeg -i {outputfilerecode} -i {mp3file} -c:v copy -c:a aac -strict experimental {outputfileshengyin}".format(outputfilerecode=vfilename3, mp3file=mp3file, outputfileshengyin=vfilename4)
     os.system(cmd)
-    return render_template('deepfake_report.html', videofile=vfilename.split('/')[-1], imagefile=ifilename.split('/')[-1], videofile2='resultvideo.mp4',outputfile=app.config['RESULT_FILENAME'])
-#这里穿的参数是什么我不太明白
+    return render_template('deepfake_report.html', videofile=vfilename.split('/')[-1], imagefile=ifilename.split('/')[-1], outputfile=app.config['RESULT_FILENAME'], videofile2 = vfilename4.split('/')[-1])
+
 
 @app.route('/videodownload/<outputfile>', methods=["GET"])
 def videodownload(outputfile):
     result_dic = os.path.join(app.config['ROOTDIR'], app.config['UPLOAD_FOLDER'], app.config['RESULT_FOLDER'])
     return send_from_directory(result_dic, outputfile, as_attachment=True)
+
+@app.route('/videodownload2/<videofile2>', methods=["GET"])
+def videodownload2(videofile2):
+    print('videofile2: ', videofile2)
+    video_path = os.path.join(app.config['ROOTDIR'], app.config['UPLOAD_FOLDER'])
+    return send_from_directory(video_path, videofile2, as_attachment=True)
+
 
 @app.route('/videoshow/<videofile>', methods=["GET"])
 def videoshow(videofile):
@@ -179,6 +194,12 @@ def audioshow(audiofile):
 def resultshow(outputfile):
     video_path = os.path.join(app.config['ROOTDIR'], app.config['UPLOAD_FOLDER'], app.config['RESULT_FOLDER'])
     return send_from_directory(video_path, outputfile)
+
+@app.route('/resultshow2/<videofile2>', methods=["GET"])
+def resultshow2(videofile2):
+    print('videofile2: ', videofile2)
+    video_path = os.path.join(app.config['ROOTDIR'], app.config['UPLOAD_FOLDER'])
+    return send_from_directory(video_path, videofile2)
 
 @app.route('/500')
 def test():
