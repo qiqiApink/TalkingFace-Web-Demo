@@ -16,16 +16,23 @@ html {
   font-family: sans-serif;
   -ms-text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%;
+  height: 100%;
 }
 body {
   margin: 0;
+  height: 100%;
+}
+footer {
+    margin-left: 150px;
+    margin-right: 150px;
+    height: 50px;
 }
 article,
 aside,
 details,
 figcaption,
 figure,
-footer,
+/*footer,*/
 header,
 hgroup,
 main,
@@ -1574,8 +1581,13 @@ pre code {
 .container {
   padding-right: 15px;
   padding-left: 15px;
+  margin-bottom: -50px;
   margin-right: auto;
   margin-left: auto;
+  min-height: 100%;
+}
+.empty {
+    height: 50px;
 }
 @media (min-width: 768px) {
   .container {
@@ -5853,6 +5865,13 @@ button.close {
   position: relative;
   padding: 20px;
 }
+/*.fix{*/
+    /*position: absolute;*/
+    /*bottom: 0;*/
+    /*padding-left: 10px;*/
+    /*height: 50px;*/
+    /*width: 100%;*/
+/*}*/
 .modal-footer {
   padding: 20px;
   text-align: right;
