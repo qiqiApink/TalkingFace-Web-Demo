@@ -85,10 +85,11 @@ def make_it_talk_handle(uid):
         os.makedirs(output_dic, exist_ok=True)
     ifilename = glob.glob(content_path + '/' + uid + 'image.*')[0]
     afilename = glob.glob(content_path + '/' + uid + 'audio.*')[0]
-    outputfile = os.path.join(output_dic, app.config['RESULT_FILENAME'])
+    outputname = uid + '_' + app.config['RESULT_FILENAME']
+    outputfile = os.path.join(output_dic, outputname)
     cmd = "/home/nfymzk/anaconda3/envs/talk/bin/python3.6 /home/nfymzk/WorkFile/Work/web_demo/app/make_it_talk/main_end2end.py --pic {ifilename} --au {afilename} --outfile {outputfile}".format(ifilename=ifilename, afilename=afilename, outputfile=outputfile)
     os.system(cmd)
-    return render_template('make_it_talk_report.html', imagefile=ifilename.split('/')[-1], audiofile=afilename.split('/')[-1], outputfile=app.config['RESULT_FILENAME'])
+    return render_template('make_it_talk_report.html', imagefile=ifilename.split('/')[-1], audiofile=afilename.split('/')[-1], outputfile=outputname)
 
 @app.route('/make_it_talk_upload', methods=['GET', 'POST'])
 def make_it_talk_upload():
@@ -96,7 +97,7 @@ def make_it_talk_upload():
     if request.method == 'GET':
         return render_template('make_it_talk_upload.html', form=form)
     if form.validate_on_submit():
-        uid = generate_random_subdic()
+        uid = 'make_it_talk_' + generate_random_subdic()
         file_dir = os.path.join(app.config['ROOTDIR'], app.config['UPLOAD_FOLDER'])
         image = form.image.data
         ifilename = uid + 'image.' + image.filename.rsplit('.', 1)[-1]
