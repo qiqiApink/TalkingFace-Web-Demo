@@ -1,13 +1,115 @@
 {% extends "base.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
 {% block app_content %}
-    <div class="container">
-        <form class="form" method="post" action="/deepfake_upload" enctype="multipart/form-data">
+    <head>
+        <style type="text/css">
+            .top{
+                width: 100%;
+                height: 10%;
+                text-align: center;
+                color: black;
+                background-color: cadetblue;
+            }
+            .description{
+                width: 100%;
+                height: 10%;
+                text-align: center;
+                color: black;
+                background-color: darkkhaki;
+            }
+            .content{
+                width: 100%;
+                height: 40%;
+                text-align: center;
+                color: black;
+                background-color: white;
+            }
+            .table{
+                width: 100%;
+                height: 100%;
+                text-align: left;
+
+                background-color: white;
+            }
+            .videopreview{
+                width: 50%;
+                height: 80%;
+                text-align: center;
+                float: left;
+                background-color: white;
+            }
+            .imagepreview{
+                width: 50%;
+                height: 80%;
+                text-align: center;
+                float: right;
+                background-color: white;
+            }
+            .video{
+                text-align: center;
+                float: left;
+                background-color: white;
+            }
+            .image{
+                text-align: center;
+                float: left;
+                background-color: white;
+            }
+            .button{
+                width: 50%;
+                height: 20%;
+                text-align: center;
+                float: left;
+                background-color: white;
+            }
+        </style>
+    </head>
+    <div class="top">
+        <h3 id="faceswap">换脸</h3>
+    </div>
+    <div class="description">
+        <div class="bs-component">
+            <h3>功能描述</h3>
+            <p>提供一张图片和一个视频，将视频中的人脸修改为图片中的人脸</p>
+        </div>
+    </div>
+    
+
+    <div class="content">
+        <form class="table" method="post" action="/deepfake_upload" enctype="multipart/form-data">
             {{ form.hidden_tag() }}
+            <div class="videopreview">
             {{ wtf.form_field(form.video) }}
-	    {{ wtf.form_field(form.image) }}
+            <video class="video" id="videoupload", src="", controls="controls">
+            </video>
+            <script type="text/javascript">
+                const videoinput = document.getElementById("video");
+                videoinput.addEventListener("change", e => {
+                    previewByURL2(e.target.files[0])
+                })
+                function previewByURL2(file) {
+                    videoupload.src = URL.createObjectURL(file)
+                }
+            </script>
+            </div>
+            <div class="imagepreview">
+	        {{ wtf.form_field(form.image) }}
+            <img class='image' id="imageupload" src="" />
+            <script type="text/javascript">
+                const imageinput = document.getElementById("image");
+                imageinput.addEventListener("change", e => {
+                    previewByURL(e.target.files[0])
+                })
+                function previewByURL(file) {
+                    imageupload.src = URL.createObjectURL(file)
+                }
+            </script>
+            </div>
+            <div class="button">
             {{ wtf.form_field(form.submit) }}
+            </div>
         </form>
         <div class="empty"></div>
+
     </div>
 {% endblock %}
