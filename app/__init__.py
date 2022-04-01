@@ -9,17 +9,17 @@ bootstrap = Bootstrap(app)
 nav=Nav()
 nav.register_element(
     'top', Navbar(
-        'FaceProject',
-        View('Home', 'index'),
+        '人脸项目',
+        View('首页', 'index'),
         Subgroup(
-            'TalkingFace',
-            View('Wav2Lip', 'wav2lip_upload'),
+            '人脸动画',
+            View('说特定的语音(Wav2Lip)', 'wav2lip_upload'),
             Separator(),
-            View('Make It Talk', 'make_it_talk_upload')
+            View('让图像动起来(Make It Talk)', 'make_it_talk_upload')
         ),
         Subgroup(
-            'FaceSwap',
-            View('DeepFake', 'deepfake_upload')
+            '换脸',
+            View('换脸(DeepFake)', 'deepfake_upload')
         )
     )
 )

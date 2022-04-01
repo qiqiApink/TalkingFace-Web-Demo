@@ -140,24 +140,32 @@ def deepfake_handle(uid):
     ifilename = glob.glob(content_path + '/' + uid + 'image.*')[0]
     mp3file = "/home/nfymzk/WorkFile/Work1/TalkingFace-Web-Demo-main/app/uploads/temp"+uid+'.mp3'
     outputfile = os.path.join(output_dic, app.config['RESULT_FILENAME'])
-    vfilename2 = content_path + '/' + uid + 're.mp4'
-    vfilename3 = content_path + '/' + uid + 'recode.mp4'
-    mp3file = content_path + '/' + uid + 'shengyin.mp3'
-    cmd = "ffmpeg -i {vfilename} -q:a 0 -map a {mp3file} -y".format(vfilename=vfilename, mp3file=mp3file)
+    #outputfile = vfilename
+    #print('vfilename: ', vfilename)
+    #print('outputfile: ', outputfile)
+    #time.sleep(10000)
+    
+    vfilename2 = content_path + '/' + uid + 're.mp4'#原始的结果视频
+    vfilename3 = content_path + '/' + uid + 'recode.mp4'#结果视频编码变更为h264
+    vfilename4 = content_path + '/' + uid + 'shengyin.mp4'#结果视频和声音文件合并
+    mp3file = content_path + '/' + uid + 'shengyin.mp3'#声音文件
+    cmd = "ffmpeg -i {vfilename} -q:a 0 -map a {mp3file}".format(vfilename=vfilename, mp3file=mp3file)
     os.system(cmd)
     cmd = "/home/nfymzk/anaconda3/envs/swap/bin/python3 /home/nfymzk/WorkFile/Work1/Faceswap1/faceswap.py  --video {vfilename} --image {ifilename} --outputfile {outputfile}".format(ROOTDIR=app.config['ROOTDIR'], vfilename=vfilename, ifilename=ifilename, outputfile=vfilename2)
     os.system(cmd)
-    cmd = "ffmpeg -i {outputfile} -vcodec libx264 -f mp4 {outputfilerecode} -y".format(outputfile=vfilename2, outputfilerecode=vfilename3)
+    cmd = "ffmpeg -i {outputfile} -vcodec libx264 -f mp4 {outputfilerecode}".format(outputfile=vfilename2, outputfilerecode=vfilename3)
     os.system(cmd)
-    cmd = "ffmpeg -i {outputfilerecode} -i {mp3file} -c:v copy -c:a aac -strict experimental {outputfileshengyin} -y".format(outputfilerecode=vfilename3, mp3file=mp3file, outputfileshengyin=outputfile)
+    cmd = "ffmpeg -i {outputfilerecode} -i {mp3file} -c:v copy -c:a aac -strict experimental {outputfileshengyin}".format(outputfilerecode=vfilename3, mp3file=mp3file, outputfileshengyin=vfilename4)
     os.system(cmd)
-    return render_template('deepfake_report.html', videofile=vfilename.split('/')[-1], imagefile=ifilename.split('/')[-1], outputfile=app.config['RESULT_FILENAME'])
+    return render_template('deepfake_report.html', videofile=vfilename.split('/')[-1], imagefile=ifilename.split('/')[-1], outputfile=app.config['RESULT_FILENAME'], videofile2 = vfilename4.split('/')[-1])
+
 
 @app.route('/videodownload/<outputfile>', methods=["GET"])
 def videodownload(outputfile):
     result_dic = os.path.join(app.config['ROOTDIR'], app.config['UPLOAD_FOLDER'], app.config['RESULT_FOLDER'])
     return send_from_directory(result_dic, outputfile, as_attachment=True)
 
+#结果视频放到uploads文件夹中，结果文件的名字中包含uid构成的随机字符串，验证可行，不同生成结果可与展示结果一一对应
 @app.route('/videodownload2/<videofile2>', methods=["GET"])
 def videodownload2(videofile2):
     print('videofile2: ', videofile2)
@@ -183,6 +191,13 @@ def audioshow(audiofile):
 def resultshow(outputfile):
     video_path = os.path.join(app.config['ROOTDIR'], app.config['UPLOAD_FOLDER'], app.config['RESULT_FOLDER'])
     return send_from_directory(video_path, outputfile)
+
+#结果视频放到uploads文件夹中，结果文件的名字中包含uid构成的随机字符串，验证可行，不同生成结果可与展示结果一一对应
+@app.route('/resultshow2/<videofile2>', methods=["GET"])
+def resultshow2(videofile2):
+    print('videofile2: ', videofile2)
+    video_path = os.path.join(app.config['ROOTDIR'], app.config['UPLOAD_FOLDER'])
+    return send_from_directory(video_path, videofile2)
 
 @app.route('/500')
 def test():
