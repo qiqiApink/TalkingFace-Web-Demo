@@ -1,5 +1,27 @@
 {% extends "base.html" %}
 {% block app_content %}
+<script type="text/javascript">
+    const video = '/resultshow/{{ outputfile }}'
+    blobLoad(video)
+    function blobLoad(src) {
+        let self = this;
+        var req = new XMLHttpRequest();
+        req.open("GET", src, true);
+        req.responseType = "blob";
+        req.onload = function (e) {
+              // Onload is triggered even on 404
+              // so we need to check the status code
+            if (this.status === 200) {
+                var videoBlob = this.response;
+                $("#videoresult").attr("src", URL.createObjectURL(videoBlob));
+            }
+        };
+        req.onerror = function () {
+              // Error
+        };
+        req.send();
+    }
+</script>
 <div class="container">
     <div>
         <h4>Download Output File</h4>
@@ -15,7 +37,7 @@
                 <!--<source src="/audioshow">!-->
         </audio>
         <h4>Result Video</h4>
-        <video controls width="320" src='/resultshow/{{ outputfile }}'>
+        <video preload="auto" id="videoresult" controls width="320" src='' controls="controls">
         </video>
     </div>
     <div class="empty"></div>

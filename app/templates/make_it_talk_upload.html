@@ -1,14 +1,180 @@
 {% extends "base.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
 {% block app_content %}
-    <div class="container">
-        <form class="form" method="post" action="/make_it_talk_upload" enctype="multipart/form-data">
+    <head>
+        <style type="text/css">
+            .top{
+                width: 100%;
+                height: 10%;
+                text-align: center;
+                color: black;
+                background-color: cadetblue;
+            }
+            .description{
+                width: 100%;
+                height: 10%;
+                text-align: center;
+                color: black;
+                background-color: darkkhaki;
+            }
+            .content{
+                width: 100%;
+                height: 40%;
+                text-align: center;
+                color: black;
+                background-color: white;
+            }
+            .table{
+                width: 100%;
+                height: 100%;
+                text-align: left;
+
+                background-color: white;
+            }
+            .videopreview{
+                width: 50%;
+                height: 80%;
+                text-align: center;
+                float: left;
+                background-color: white;
+            }
+            .imagepreview{
+                width: 50%;
+                height: 80%;
+                text-align: center;
+                float: right;
+                background-color: white;
+            }
+            .video{
+                text-align: center;
+                float: left;
+                background-color: white;
+            }
+            .image{
+                text-align: center;
+                float: left;
+                background-color: white;
+            }
+        </style>
+    </head>
+    <div class="top">
+        <h3 id="talkingface">人脸动画</h3>
+    </div>
+    <div class="description">
+        <div class="bs-component">
+            <h3>功能描述</h3>
+            <p>提供一段语音和一张目标说话人图像，用语音驱动生成目标说话人唇形与该语音内容匹配的动画</p>
+        </div>
+    </div>
+
+    <!-- <script>
+        $("#submit").click(function(){
+            var post_data = $('#sendform').serialize();
+            $.ajax({
+                type:'POST',
+                data:post_data,
+                dataType: 'json',
+                success:function(res){
+                    if (res['status'] == 'success') {
+                        console.log('aaa');
+                    }else {
+                        console.log('failed')
+                    }
+                },
+                error:function (res) {
+                    if (res['status'] == 'fail') {
+                        alert(res['status']);
+                    }
+                }
+            })
+            return false; //阻止form表单的submit事件，避免提交2次
+        })
+        function submit_query(btn){
+            var sitv = setInterval(function(){
+                // var prog_url = ...                   // prog_url指请求进度的url，后面会在django中设置
+                $.getJSON(prog_url, function(res){ 
+                    $('#prog_in').width(res + '%');     // 改变进度条进度，注意这里是内层的div， res是后台返回的进度
+                });
+            }, 1000);                                 // 每1秒查询一次后台进度
+
+            var this_url = window.location.href                        // 指当前页面的url
+            var yourjson = ...
+            $.getJSON(thisurl, yourjson, function(res){ 
+                // ...
+                clearInterval(sitv);                   // 此时请求成功返回结果了，结束对后台进度的查询
+                $('#prog_out').attr("class", "progress progress-bar-success"); // 修改进度条外层div的class, 改为完成形态
+            });
+        } -->
+
+        
+    </script>
+
+    <div class="content">
+        <form class="table" method="post" action="/make_it_talk_upload" enctype="multipart/form-data">
             {{ form.hidden_tag() }}
+            <div class="imagepreview">
             {{ wtf.form_field(form.image) }}
+            <image class='image' id="imageshow" src="" controls="controls">
+            </image>
+            <script type="text/javascript">
+                const imageinput = document.getElementById("image");
+                imageinput.addEventListener("change", e => {
+                    previewByURL(e.target.files[0])
+                })
+                function previewByURL(file) {
+                    imageshow.src = URL.createObjectURL(file)
+                }
+            </script>
+            </div>
+
+            <div class="audiopreview">
             {{ wtf.form_field(form.audio) }}
-            {{ wtf.form_field(form.csrf_token)}}
+            <audio class='audio' id="audioshow" src="" controls="controls">
+            </audio>
+            <script type="text/javascript">
+                const audioinput = document.getElementById("audio");
+                audioinput.addEventListener("change", e => {
+                    previewByURL2(e.target.files[0])
+                })
+                function previewByURL2(file) {
+                    audioshow.src = URL.createObjectURL(file)
+                }
+            </script>
+            </div>
             {{ wtf.form_field(form.submit) }}
         </form>
         <div class="empty"></div>
+        <div id="prog_out" class="progress progress-striped active">
+            <div id="prog_in" class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
+            </div>
+        </div>
+        
     </div>
 {% endblock %}
+
+<!-- <script type="text/javascript">
+    const imageinput = document.getElementById("image");
+    const audioinput = document.getElementById("audio");
+    function showdiv(){
+        var image_target=document.getElementById('imageshow');
+        var audio_target=document.getElementById('audioshow');
+        if (imageinput.value != ""){
+            image_target.style.display="";
+        }
+        if (audioinput.value != ""){
+            audio_target.style.display="";
+        }
+    }
+    imageinput.addEventListener("change", i => {
+        showdiv(),
+        previewByURL('imageshow', i.target.files[0])
+    })
+    audioinput.addEventListener("change", a => {
+        showdiv(),
+        previewByURL('audioshow', a.target.files[0])
+    })
+    function previewByURL(targetid, file) {
+        var target = document.getElementById(targetid);
+        target.src = URL.createObjectURL(file)
+    }
+</script> -->
