@@ -1,19 +1,46 @@
 {% extends "base.html" %}
 {% block app_content %}
+<script type="text/javascript">
+    const video = '/resultshow/{{ outputfile }}'
+    blobLoad(video)
+    function blobLoad(src) {
+        let self = this;
+        var req = new XMLHttpRequest();
+        req.open("GET", src, true);
+        req.responseType = "blob";
+        req.onload = function (e) {
+            // Onload is triggered even on 404
+            // so we need to check the status code
+            if (this.status === 200) {
+                var videoBlob = this.response;
+                $("#videoresult").attr("src", URL.createObjectURL(videoBlob));
+            }
+        };
+        req.onerror = function () {
+            // Error
+        };
+        req.send();
+    }
+
+    function download() {
+        document.getElementById("download").click();
+    }
+    window.onload = download;
+</script>
 <div class="container">
     <div>
-        <h4>Download Output File</h4>
-        <a href="/videodownload2/{{ videofile2 }}">Download Video</a></br>
+        <h4>生成结果视频下载</h4>
+        <a href="/videodownload2/{{ videofile2 }}" id="download">下载视频</a></br>
     </div>
     <div>
-        <h4>Original Video</h4>
+        <h4>原始输入视频</h4>
         <video controls width="320" src='/videoshow/{{ videofile }}'>
                 <!--<source src="/videoshow" type="video/mp4">!-->
         </video>
-        <h4>Image of Face</h4>
+        <h4>原始输入图片</h4>
         <img src='/imageshow/{{ imagefile }}' />
                 <!--<source src="/audioshow">!-->
-        <h4>Result Video</h4>
+        <h4>生成结果</h4>
         <video controls width="320" src='/resultshow/{{ outputfile }}'>
             <!--<source src="/videoshow" type="video/mp4">!-->
         </video>

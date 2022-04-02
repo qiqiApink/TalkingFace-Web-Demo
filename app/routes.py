@@ -11,19 +11,19 @@ from flask_wtf.file import FileField, FileRequired, FileAllowed
 from wtforms import SubmitField
 
 class makeittalk_Upload(FlaskForm):
-    audio = FileField('Choose Audio File', validators=[FileAllowed(app.config['ALLOWED_AUDIO_EXTENSIONS'], 'Supported format: wav, mp3, flac, ape, aac'), FileRequired('empty')])
-    image = FileField('Choose Image File', validators=[FileAllowed(app.config['ALLOWED_IMAGE_EXTENSIONS'], 'Supported format: png, jpg, jpeg, PNG, JPEG'), FileRequired('empty')])
-    submit = SubmitField('Generate')
+    audio = FileField('选择音频文件', validators=[FileAllowed(app.config['ALLOWED_AUDIO_EXTENSIONS'], '支持上传类型: wav, mp3, flac, ape, aac'), FileRequired('empty')])
+    image = FileField('选择图片', validators=[FileAllowed(app.config['ALLOWED_IMAGE_EXTENSIONS'], '支持上传类型: png, jpg, jpeg, PNG, JPEG'), FileRequired('empty')])
+    submit = SubmitField('生成')
 
 class wav2lip_Upload(FlaskForm):
-    video = FileField('Choose Video File', validators=[FileAllowed(app.config['ALLOWED_VIDEO_EXTENSIONS'], 'Supported format: mp4'), FileRequired('empty')])
-    audio = FileField('Choose Audio File', validators=[FileAllowed(app.config['ALLOWED_AUDIO_EXTENSIONS'], 'Supported format: wav, mp3, flac, ape, aac'), FileRequired('empty')])
-    submit = SubmitField('Generate')
+    video = FileField('选择视频文件', validators=[FileAllowed(app.config['ALLOWED_VIDEO_EXTENSIONS'], '支持上传类型: mp4'), FileRequired('empty')])
+    audio = FileField('选择音频文件', validators=[FileAllowed(app.config['ALLOWED_AUDIO_EXTENSIONS'], '支持上传类型: wav, mp3, flac, ape, aac'), FileRequired('empty')])
+    submit = SubmitField('生成')
 
 class deepfake_Upload(FlaskForm):
-    video = FileField('Choose Video File', validators=[FileAllowed(app.config['ALLOWED_VIDEO_EXTENSIONS'], 'Supported format: mp4'), FileRequired('empty')])
-    image = FileField('Choose image File', validators=[FileAllowed(app.config['ALLOWED_IMAGE_EXTENSIONS'], 'Supported format: png, jpg, bmp, eps, svg'), FileRequired('empty')])
-    submit = SubmitField('Generate')
+    video = FileField('选择视频文件', validators=[FileAllowed(app.config['ALLOWED_VIDEO_EXTENSIONS'], '支持上传类型: mp4'), FileRequired('empty')])
+    image = FileField('选择图片', validators=[FileAllowed(app.config['ALLOWED_IMAGE_EXTENSIONS'], '支持上传类型: png, jpg, bmp, eps, svg'), FileRequired('empty')])
+    submit = SubmitField('生成')
 
 
 def generate_random_subdic(length=13):
@@ -69,10 +69,10 @@ def wav2lip_handle(uid):
         os.makedirs(output_dic)
     vfilename = glob.glob(content_path + '/' + uid + 'video.*')[0]
     afilename = glob.glob(content_path + '/' + uid + 'audio.*')[0]
-    outputfile = os.path.join(output_dic, app.config['RESULT_FILENAME'])
+    outputfile = os.path.join(output_dic, uid + app.config['RESULT_FILENAME'])
     cmd = "CUDA_VISIBLE_DEVICES=2 /home/zyq/anaconda3/envs/talkingface/bin/python3 /home/zyq/zhangyaqi_1/TalkingFace/app/Wav2Lip/inference.py --checkpoint_path /home/zyq/zhangyaqi_1/TalkingFace/app/Wav2Lip/checkpoints/wav2lip_gan.pth --face {vfilename} --audio {afilename} --outfile {outputfile}".format(vfilename=vfilename, afilename=afilename, outputfile=outputfile)
     os.system(cmd)
-    return render_template('wav2lip_report.html', videofile=vfilename.split('/')[-1], audiofile=afilename.split('/')[-1], outputfile=app.config['RESULT_FILENAME'])
+    return render_template('wav2lip_report.html', videofile=vfilename.split('/')[-1], audiofile=afilename.split('/')[-1], outputfile=uid + app.config['RESULT_FILENAME'])
 
 '''
 Makeittalk
@@ -140,12 +140,12 @@ def deepfake_handle(uid):
     vfilename = glob.glob(content_path + '/' + uid + 'video.*')[0]
     ifilename = glob.glob(content_path + '/' + uid + 'image.*')[0]
     mp3file = "/home/nfymzk/WorkFile/Work1/TalkingFace-Web-Demo-main/app/uploads/temp"+uid+'.mp3'
-    outputfile = os.path.join(output_dic, app.config['RESULT_FILENAME'])
+    outputfile = os.path.join(output_dic, uid + app.config['RESULT_FILENAME'])
     #outputfile = vfilename
     #print('vfilename: ', vfilename)
     #print('outputfile: ', outputfile)
     #time.sleep(10000)
-    
+
     vfilename2 = content_path + '/' + uid + 're.mp4'#原始的结果视频
     vfilename3 = content_path + '/' + uid + 'recode.mp4'#结果视频编码变更为h264
     vfilename4 = content_path + '/' + uid + 'shengyin.mp4'#结果视频和声音文件合并
@@ -156,9 +156,9 @@ def deepfake_handle(uid):
     os.system(cmd)
     cmd = "ffmpeg -i {outputfile} -vcodec libx264 -f mp4 {outputfilerecode}".format(outputfile=vfilename2, outputfilerecode=vfilename3)
     os.system(cmd)
-    cmd = "ffmpeg -i {outputfilerecode} -i {mp3file} -c:v copy -c:a aac -strict experimental {outputfileshengyin}".format(outputfilerecode=vfilename3, mp3file=mp3file, outputfileshengyin=vfilename4)
+    cmd = "ffmpeg -i {outputfilerecode} -i {mp3file} -c:v copy -c:a aac -strict experimental {outputfileshengyin}".format(outputfilerecode=vfilename3, mp3file=mp3file, outputfileshengyin=outpufile)
     os.system(cmd)
-    return render_template('deepfake_report.html', videofile=vfilename.split('/')[-1], imagefile=ifilename.split('/')[-1], outputfile=app.config['RESULT_FILENAME'], videofile2 = vfilename4.split('/')[-1])
+    return render_template('deepfake_report.html', videofile=vfilename.split('/')[-1], imagefile=ifilename.split('/')[-1], outputfile=uid+app.config['RESULT_FILENAME'])
 
 
 @app.route('/videodownload/<outputfile>', methods=["GET"])
@@ -167,11 +167,11 @@ def videodownload(outputfile):
     return send_from_directory(result_dic, outputfile, as_attachment=True)
 
 #结果视频放到uploads文件夹中，结果文件的名字中包含uid构成的随机字符串，验证可行，不同生成结果可与展示结果一一对应
-@app.route('/videodownload2/<videofile2>', methods=["GET"])
-def videodownload2(videofile2):
-    print('videofile2: ', videofile2)
-    video_path = os.path.join(app.config['ROOTDIR'], app.config['UPLOAD_FOLDER'])
-    return send_from_directory(video_path, videofile2, as_attachment=True)
+# @app.route('/videodownload2/<videofile2>', methods=["GET"])
+# def videodownload2(videofile2):
+    # print('videofile2: ', videofile2)
+    # video_path = os.path.join(app.config['ROOTDIR'], app.config['UPLOAD_FOLDER'])
+    # return send_from_directory(video_path, videofile2, as_attachment=True)
 
 @app.route('/videoshow/<videofile>', methods=["GET"])
 def videoshow(videofile):
@@ -194,11 +194,11 @@ def resultshow(outputfile):
     return send_from_directory(video_path, outputfile)
 
 #结果视频放到uploads文件夹中，结果文件的名字中包含uid构成的随机字符串，验证可行，不同生成结果可与展示结果一一对应
-@app.route('/resultshow2/<videofile2>', methods=["GET"])
-def resultshow2(videofile2):
-    print('videofile2: ', videofile2)
-    video_path = os.path.join(app.config['ROOTDIR'], app.config['UPLOAD_FOLDER'])
-    return send_from_directory(video_path, videofile2)
+# @app.route('/resultshow2/<videofile2>', methods=["GET"])
+# def resultshow2(videofile2):
+    # print('videofile2: ', videofile2)
+    # video_path = os.path.join(app.config['ROOTDIR'], app.config['UPLOAD_FOLDER'])
+    # return send_from_directory(video_path, videofile2)
 
 @app.route('/500')
 def test():

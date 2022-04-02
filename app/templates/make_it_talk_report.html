@@ -21,22 +21,27 @@
         };
         req.send();
     }
+
+    function download() {
+        document.getElementById("download").click();
+    }
+    window.onload = download;
 </script>
 <div class="container">
     <div>
-        <h4>Download Output File</h4>
-        <a href="/videodownload/{{ outputfile }}">Download Video</a></br>
+        <h4>生成结果视频下载</h4>
+        <a href="/videodownload/{{ outputfile }} id="download"">下载视频</a></br>
     </div>
     <div>
-        <h4>Driving Image</h4>
+        <h4>原始输入图片</h4>
         <image controls width="320" src='/imageshow/{{ imagefile }}'>
                 <!--<source src="/videoshow" type="video/mp4">!-->
         </video>
-        <h4>Original Audio</h4>
+        <h4>原始输入音频</h4>
         <audio controls width="320" src='/audioshow/{{ audiofile }}'>
                 <!--<source src="/audioshow">!-->
         </audio>
-        <h4>Result Video</h4>
+        <h4>生成结果</h4>
         <video preload="auto" id="videoresult" controls width="320" src='' controls="controls">
         </video>
     </div>

@@ -1,66 +1,43 @@
 {% extends "base.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
 {% block app_content %}
-    <head>
-        <style type="text/css">
-            *{
-                margin: 3;
-                padding: 0;
-            }
-            .top{
-                width: 100%;
-                height: 10%;
-                text-align: center;
-                color: black;
-                background-color: cadetblue;
-                margin: 0;
-                padding: 0;
-            }
-            .description{
-                width: 100%;
-                height: 10%;
-                text-align: center;
-                color: black;
-                background-color: white;
-                margin: 3;
-                padding: 0;
-                
-            }
-            .content{
-                width: 100%;
-                height: 40%;
-                color: black;
-                background-color: white;
-            }
-            .videopreview{
-                width: 50%;
-                height: 80%;
-                text-align: left;
-                float: left;
-                background-color: white;
-            }
-            .imagepreview{
-                width: 50%;
-                height: 80%;
-                text-align: left;
-                float: right;
-                background-color: white;
-            }
-            .video{
-                background-color: white;
-            }
-            .image{
-                background-color: white;
-            }
-            .button{
-                width: 100%;
-                height: 20%;
-                text-align:left;
-                float: left;
-                background-color: white;
-            }
-        </style>
-    </head>
+    <style type="text/css">
+        *{
+            margin: 3;
+            padding: 0;
+        }
+        .top{
+            width: 100%;
+            height: 10%;
+            text-align: center;
+            color: black;
+            background-color: cadetblue;
+            margin: 0;
+            padding: 0;
+        }
+        .description{
+            width: 100%;
+            height: 10%;
+            text-align: center;
+            color: black;
+            background-color: darkkhaki;
+            margin: 3;
+            padding: 0;
+        }
+        .form{
+            width: 100%;
+            display: grid;
+        }
+        .leftpreview{
+            grid-column: 1 / 2;
+        }
+        .middlepreview{
+            grid-column: 3 /4;
+        }
+        .generate{
+            grid-column:5;
+        }
+    </style>
     <div class="top">
         <h3 id="faceswap">换脸</h3>
     </div>
@@ -70,57 +47,49 @@
             <p>提供一张图片和一个视频，将视频中的人脸修改为图片中的人脸</p>
         </div>
     </div>
-    
-
-    <div class="content">
-        <form method="post" action="/deepfake_upload" enctype="multipart/form-data">
+    </br>
+    <div class="container">
+        <form class="form" method="post" action="/deepfake_upload" enctype="multipart/form-data">
             {{ form.hidden_tag() }}
-            <div class="videopreview">
-            {{ wtf.form_field(form.video) }}
-            <video controls width="320", class="video" id="videoupload", src="", controls="controls", style="display:none">
-            </video>
-            <script type="text/javascript">
-                const videoinput = document.getElementById("video");
-                function showdiv(){
-                    var target = document.getElementById("videoupload");
-                    if (videoinput.value != ""){
-                        target.style.display = "";
-                    }
-                }
-                videoinput.addEventListener("change", e => {
-                    showdiv();
-                    previewByURL2(e.target.files[0])
-                })
-                function previewByURL2(file) {
-                    videoupload.src = URL.createObjectURL(file)
-                }
-            </script>
+            <div class="leftpreview">
+                {{ wtf.form_field(form.video) }}
+                <video src="" alt="预览" id="videoshow" controls="controls" width="400" height="200" style="display: none">
             </div>
-            <div class="imagepreview">
-	        {{ wtf.form_field(form.image) }}
-            <img  height="240" class='image' id="imageupload" style="display:none" src="" />
-            <script type="text/javascript">
-                const imageinput = document.getElementById("image");
-                function showdiv2(){
-                    var target = document.getElementById("imageupload");
-                    if (imageinput.value != ""){
-                        target.style.display = "";
-                    }
-                }
-                imageinput.addEventListener("change", e => {
-                    showdiv2();
-                    previewByURL(e.target.files[0])
-                })
-                function previewByURL(file) {
-                    imageupload.src = URL.createObjectURL(file)
-                }
-            </script>
+            <div class="middlepreview">
+                {{ wtf.form_field(form.image) }}
+                <img  height="240" class='image' id="imageshow" style="display:none" src="" />
             </div>
-            <div class="button">
-            {{ wtf.form_field(form.submit) }}
+            <div class="generate">
+                {{ wtf.form_field(form.submit) }}
             </div>
         </form>
         <div class="empty"></div>
-
     </div>
+
+    <script>
+        const videoInput = document.getElementById('video');
+        const imageInput = document.getElementById('image');
+        function showdiv(){
+            var video_target=document.getElementById('videoshow');
+            var image_target=document.getElementById('imageshow');
+            if (videoInput.value != ""){
+                video_target.style.display="";
+            }
+            if (imageInput.value != ""){
+                image_target.style.display="";
+            }
+        }
+        videoInput.addEventListener('change', v => {
+            showdiv(),
+            previewByURL('videoshow', v.target.files[0])
+        })
+        imageInput.addEventListener('change', a => {
+            showdiv(),
+            previewByURL('imageshow', a.target.files[0])
+        })
+        function previewByURL (targetid, file) {
+            var target = document.getElementById(targetid);
+            target.src = URL.createObjectURL(file);
+        }
+    </script>
 {% endblock %}

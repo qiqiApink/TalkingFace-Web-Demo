@@ -1,13 +1,95 @@
 {% extends "base.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
 {% block app_content %}
+    <style type="text/css">
+        *{
+            margin: 3;
+            padding: 0;
+        }
+        .top{
+            width: 100%;
+            height: 10%;
+            text-align: center;
+            color: black;
+            background-color: cadetblue;
+            margin: 0;
+            padding: 0;
+        }
+        .description{
+            width: 100%;
+            height: 10%;
+            text-align: center;
+            color: black;
+            background-color: darkkhaki;
+            margin: 3;
+            padding: 0;
+        }
+        .form{
+            width: 100%;
+            display: grid;
+        }
+        .leftpreview{
+            grid-column: 1 / 2;
+        }
+        .middlepreview{
+            grid-column: 3 /4;
+        }
+        .generate{
+            grid-column:5;
+        }
+    </style>
+    <div class="top">
+        <h3 id="talkingface">人脸动画</h3>
+    </div>
+    <div class="description">
+        <div class="bs-component">
+            <h3>功能描述</h3>
+            <p>提供一段语音和一段视频，用语音驱动生成视频中说话人口型与该语音内容相匹配的动画</p>
+        </div>
+    </div>
+    </br>
     <div class="container">
         <form class="form" method="post" action="/wav2lip_upload" enctype="multipart/form-data">
             {{ form.hidden_tag() }}
-            {{ wtf.form_field(form.video) }}
-	    {{ wtf.form_field(form.audio) }}
-            {{ wtf.form_field(form.submit) }}
+            <div class="leftpreview">
+                {{ wtf.form_field(form.video) }}
+                <video src="" alt="预览" id="videoshow" controls="controls" width="400" height="200" style="display: none">
+            </div>
+            <div class="middlepreview">
+                {{ wtf.form_field(form.audio) }}
+                <audio src="" alt="预览" id="audioshow" controls="controls" style="display: none">
+            </div>
+            <div class="generate">
+                {{ wtf.form_field(form.submit) }}
+            </div>
         </form>
         <div class="empty"></div>
     </div>
+
+    <script>
+        const videoInput = document.getElementById('video');
+        const audioInput = document.getElementById('audio');
+        function showdiv(){
+            var video_target=document.getElementById('videoshow');
+            var audio_target=document.getElementById('audioshow');
+            if (videoInput.value != ""){
+                video_target.style.display="";
+            }
+            if (audioInput.value != ""){
+                audio_target.style.display="";
+            }
+        }
+        videoInput.addEventListener('change', v => {
+            showdiv(),
+            previewByURL('videoshow', v.target.files[0])
+        })
+        audioInput.addEventListener('change', a => {
+            showdiv(),
+            previewByURL('audioshow', a.target.files[0])
+        })
+        function previewByURL (targetid, file) {
+            var target = document.getElementById(targetid);
+            target.src = URL.createObjectURL(file);
+        }
+    </script>
 {% endblock %}
