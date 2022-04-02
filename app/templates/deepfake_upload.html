@@ -3,62 +3,59 @@
 {% block app_content %}
     <head>
         <style type="text/css">
+            *{
+                margin: 3;
+                padding: 0;
+            }
             .top{
                 width: 100%;
                 height: 10%;
                 text-align: center;
                 color: black;
                 background-color: cadetblue;
+                margin: 0;
+                padding: 0;
             }
             .description{
                 width: 100%;
                 height: 10%;
                 text-align: center;
                 color: black;
-                background-color: darkkhaki;
+                background-color: white;
+                margin: 3;
+                padding: 0;
+                
             }
             .content{
                 width: 100%;
                 height: 40%;
-                text-align: center;
                 color: black;
-                background-color: white;
-            }
-            .table{
-                width: 100%;
-                height: 100%;
-                text-align: left;
-
                 background-color: white;
             }
             .videopreview{
                 width: 50%;
                 height: 80%;
-                text-align: center;
+                text-align: left;
                 float: left;
                 background-color: white;
             }
             .imagepreview{
                 width: 50%;
                 height: 80%;
-                text-align: center;
+                text-align: left;
                 float: right;
                 background-color: white;
             }
             .video{
-                text-align: center;
-                float: left;
                 background-color: white;
             }
             .image{
-                text-align: center;
-                float: left;
                 background-color: white;
             }
             .button{
-                width: 50%;
+                width: 100%;
                 height: 20%;
-                text-align: center;
+                text-align:left;
                 float: left;
                 background-color: white;
             }
@@ -76,15 +73,22 @@
     
 
     <div class="content">
-        <form class="table" method="post" action="/deepfake_upload" enctype="multipart/form-data">
+        <form method="post" action="/deepfake_upload" enctype="multipart/form-data">
             {{ form.hidden_tag() }}
             <div class="videopreview">
             {{ wtf.form_field(form.video) }}
-            <video class="video" id="videoupload", src="", controls="controls">
+            <video controls width="320", class="video" id="videoupload", src="", controls="controls", style="display:none">
             </video>
             <script type="text/javascript">
                 const videoinput = document.getElementById("video");
+                function showdiv(){
+                    var target = document.getElementById("videoupload");
+                    if (videoinput.value != ""){
+                        target.style.display = "";
+                    }
+                }
                 videoinput.addEventListener("change", e => {
+                    showdiv();
                     previewByURL2(e.target.files[0])
                 })
                 function previewByURL2(file) {
@@ -94,10 +98,17 @@
             </div>
             <div class="imagepreview">
 	        {{ wtf.form_field(form.image) }}
-            <img class='image' id="imageupload" src="" />
+            <img  height="240" class='image' id="imageupload" style="display:none" src="" />
             <script type="text/javascript">
                 const imageinput = document.getElementById("image");
+                function showdiv2(){
+                    var target = document.getElementById("imageupload");
+                    if (imageinput.value != ""){
+                        target.style.display = "";
+                    }
+                }
                 imageinput.addEventListener("change", e => {
+                    showdiv2();
                     previewByURL(e.target.files[0])
                 })
                 function previewByURL(file) {
