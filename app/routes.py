@@ -156,7 +156,7 @@ def deepfake_handle(uid):
     os.system(cmd)
     cmd = "ffmpeg -i {outputfile} -vcodec libx264 -f mp4 {outputfilerecode}".format(outputfile=vfilename2, outputfilerecode=vfilename3)
     os.system(cmd)
-    cmd = "ffmpeg -i {outputfilerecode} -i {mp3file} -c:v copy -c:a aac -strict experimental {outputfileshengyin}".format(outputfilerecode=vfilename3, mp3file=mp3file, outputfileshengyin=outpufile)
+    cmd = "ffmpeg -i {outputfilerecode} -i {mp3file} -c:v copy -c:a aac -strict experimental {outputfileshengyin}".format(outputfilerecode=vfilename3, mp3file=mp3file, outputfileshengyin=outputfile)
     os.system(cmd)
     return render_template('deepfake_report.html', videofile=vfilename.split('/')[-1], imagefile=ifilename.split('/')[-1], outputfile=uid+app.config['RESULT_FILENAME'])
 
