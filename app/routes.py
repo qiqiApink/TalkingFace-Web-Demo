@@ -25,6 +25,8 @@ class deepfake_Upload(FlaskForm):
     image = FileField('选择图片', validators=[FileAllowed(app.config['ALLOWED_IMAGE_EXTENSIONS'], '支持上传类型: png, jpg, bmp, eps, svg'), FileRequired('empty')])
     submit = SubmitField('生成')
 
+class deepfake_Load(FlaskForm):
+    submit = SubmitField('等待中')
 
 def generate_random_subdic(length=13):
     time = '{0:%Y%m%d%H%M%S%f}'.format(datetime.datetime.now())
@@ -59,7 +61,19 @@ def wav2lip_upload():
         audio.save(os.path.join(file_dir, afilename))
     else:
         return render_template('wav2lip_upload.html', form=form)
-    return redirect(url_for('wav2lip_handle', uid=uid))
+    return redirect(url_for('wav2lip_loading', uid=uid))
+
+@app.route('/loading/<uid>', methods=['GET', 'POST'])
+def wav2lip_loading(uid):
+    form = deepfake_Load()
+    if request.method == 'GET':
+        return render_template('loading.html', form=form)
+    if form.validate_on_submit():
+        print('\n')
+        print('\n')
+        print('\n')
+        print('\n')
+        return redirect(url_for('wav2lip_handle', uid=uid))
 
 @app.route('/wav2lip_report/<uid>', methods=['GET'])
 def wav2lip_handle(uid):
@@ -107,7 +121,19 @@ def make_it_talk_upload():
         audio.save(os.path.join(file_dir, afilename))
     else:
         return render_template('make_it_talk_upload.html', form=form)
-    return redirect(url_for('make_it_talk_handle', uid=uid))
+    return redirect(url_for('make_it_talk_loading', uid=uid))
+
+@app.route('/loading/<uid>', methods=['GET', 'POST'])
+def make_it_talk_loading(uid):
+    form = deepfake_Load()
+    if request.method == 'GET':
+        return render_template('loading.html', form=form)
+    if form.validate_on_submit():
+        print('\n')
+        print('\n')
+        print('\n')
+        print('\n')
+        return redirect(url_for('make_it_talk_handle', uid=uid))
 
 '''
 deepfake
@@ -129,7 +155,19 @@ def deepfake_upload():
         image.save(os.path.join(file_dir, ifilename))
     else:
         return render_template('deepfake_upload.html', form=form)
-    return redirect(url_for('deepfake_handle', uid=uid))
+    return redirect(url_for('deepfake_loading', uid=uid))
+
+@app.route('/loading/<uid>', methods=['GET', 'POST'])
+def deepfake_loading(uid):
+    form = deepfake_Load()
+    if request.method == 'GET':
+        return render_template('loading.html', form=form)
+    if form.validate_on_submit():
+        print('\n')
+        print('\n')
+        print('\n')
+        print('\n')
+        return redirect(url_for('deepfake_handle', uid=uid))
 
 @app.route('/deepfake_report/<uid>', methods=['GET'])
 def deepfake_handle(uid):
