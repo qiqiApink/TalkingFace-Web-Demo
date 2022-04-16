@@ -63,7 +63,7 @@ def wav2lip_upload():
         return render_template('wav2lip_upload.html', form=form)
     return redirect(url_for('wav2lip_loading', uid=uid))
 
-@app.route('/loading/<uid>', methods=['GET', 'POST'])
+@app.route('/wav2lip_loading/<uid>', methods=['GET', 'POST'])
 def wav2lip_loading(uid):
     form = deepfake_Load()
     if request.method == 'GET':
@@ -123,7 +123,7 @@ def make_it_talk_upload():
         return render_template('make_it_talk_upload.html', form=form)
     return redirect(url_for('make_it_talk_loading', uid=uid))
 
-@app.route('/loading/<uid>', methods=['GET', 'POST'])
+@app.route('/make_it_talk_loading/<uid>', methods=['GET', 'POST'])
 def make_it_talk_loading(uid):
     form = deepfake_Load()
     if request.method == 'GET':
