@@ -101,6 +101,9 @@
             <div class="generate">
                 {{ wtf.form_field(form.submit) }}
             </div>
+            <!-- <div class="message">
+
+            </div> -->
         </form>
         <div class="empty"></div>
         <!--<div id="prog_out" class="progress progress-striped active">
@@ -134,5 +137,13 @@
             var target = document.getElementById(targetid);
             target.src = URL.createObjectURL(file);
         }
+        // function message (){
+        //     if (audioInput.value != "" && imageInput.value != ""){
+        //         for (msg in get_flashed_messages()){
+        //             message.src = msg
+        //         }
+        //     }
+        // }
+
     </script>
 {% endblock %}
