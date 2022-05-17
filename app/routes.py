@@ -200,6 +200,10 @@ def resultshow(outputfile):
     # video_path = os.path.join(app.config['ROOTDIR'], app.config['UPLOAD_FOLDER'])
     # return send_from_directory(video_path, videofile2)
 
+@app.route('/baidu')
+def baidu():
+    return render_template('baidu.html')
+
 @app.route('/500')
 def test():
     return render_template('500.html')

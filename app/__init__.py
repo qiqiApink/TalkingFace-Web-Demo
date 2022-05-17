@@ -20,6 +20,10 @@ nav.register_element(
         Subgroup(
             '换脸',
             View('换脸(DeepFake)', 'deepfake_upload')
+        ),
+        Subgroup(
+            '你的方法',
+            View('你的方法', 'baidu')
         )
     )
 )
