@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, url_for, request, send_from_directory
+from flask import flash, render_template, redirect, url_for, request, send_from_directory
 from app import app
 import os
 import glob
@@ -51,7 +51,7 @@ def wav2lip_upload():
     if request.method == 'GET':
         return render_template('wav2lip_upload.html', form=form)
     if form.validate_on_submit():
-        uid = generate_random_subdic()
+        uid = 'wav2lip_' + generate_random_subdic()
         file_dir = os.path.join(app.config['ROOTDIR'], app.config['UPLOAD_FOLDER'])
         video = form.video.data
         vfilename = uid + 'video.' + video.filename.rsplit('.', 1)[-1]
@@ -119,6 +119,7 @@ def make_it_talk_upload():
         audio = form.audio.data
         afilename = uid + 'audio.' + audio.filename.rsplit('.', 1)[-1]
         audio.save(os.path.join(file_dir, afilename))
+        flash('上传成功! 点击"生成"按钮开始体验吧！', 'success') 
     else:
         return render_template('make_it_talk_upload.html', form=form)
     return redirect(url_for('make_it_talk_loading', uid=uid))
@@ -144,7 +145,7 @@ def deepfake_upload():
     if request.method == 'GET':
         return render_template('deepfake_upload.html', form=form)
     if form.validate_on_submit():
-        uid = generate_random_subdic()
+        uid = 'deepfake_' + generate_random_subdic()
         file_dir = os.path.join(app.config['ROOTDIR'], app.config['UPLOAD_FOLDER'])
         video = form.video.data
         print('video: ', video)
